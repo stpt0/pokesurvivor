@@ -7,14 +7,41 @@ const MAX_BUFFERED_BYTES = 256 * 1024;
 const MAX_PAYLOAD_BYTES = 256 * 1024;
 const HOST_RECONNECT_MS = 15000;
 
-function originAllowed(origin, allowedOrigins) {
+function normalizeAllowedOrigins(value) {
+  return new Set(value.split(',').map(entry => entry.trim()).filter(Boolean).flatMap(entry => {
+    try {
+      const url = new URL(entry);
+      return [url.origin, url.href, entry];
+    } catch {
+      return [entry];
+    }
+  }));
+}
+
+function matchAllowedOrigin(origin, allowedOrigins) {
+  const patterns = [...allowedOrigins];
   if (!origin) return true;
   try {
     const url = new URL(origin);
-    return allowedOrigins.has(url.origin);
+    const candidates = [url.origin, url.href, `${url.protocol}//${url.host}${url.pathname}`, `${url.protocol}//${url.host}`];
+    for (const candidate of candidates) {
+      for (const pattern of patterns) {
+        if (pattern === '*') return true;
+        if (pattern === candidate) return true;
+        if (pattern.includes('*')) {
+          const regex = new RegExp(`^${pattern.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*')}$`);
+          if (regex.test(candidate)) return true;
+        }
+      }
+    }
+    return false;
   } catch {
     return false;
   }
+}
+
+function originAllowed(origin, allowedOrigins) {
+  return matchAllowedOrigin(origin, allowedOrigins);
 }
 
 function createFirebaseVerifier() {
@@ -25,8 +52,8 @@ function createFirebaseVerifier() {
   return token => getAuth(app).verifyIdToken(token).then(decoded => decoded.uid);
 }
 
-function createCoopServer({ verifyToken = createFirebaseVerifier(), allowedOrigins = process.env.COOP_ALLOWED_ORIGINS || 'https://pokesurvivor.com,https://www.pokesurvivor.com,http://localhost:8000,http://127.0.0.1:8000', maxConnections = 256 } = {}) {
-  const allowed = new Set(allowedOrigins.split(',').map(value => value.trim()).filter(Boolean));
+function createCoopServer({ verifyToken = createFirebaseVerifier(), allowedOrigins = process.env.COOP_ALLOWED_ORIGINS || 'https://pokesurvivor.com,https://www.pokesurvivor.com,https://stpt0.github.io/pokesurvivor/,http://localhost:8000,http://127.0.0.1:8000,http://100.102.116.15:8000', maxConnections = 256 } = {}) {
+  const allowed = normalizeAllowedOrigins(allowedOrigins);
   const rooms = new Map();
   const sessions = new Map();
   const server = http.createServer((req, res) => {
@@ -150,12 +177,27 @@ function createCoopServer({ verifyToken = createFirebaseVerifier(), allowedOrigi
   }
 
   server.on('upgrade', (req, socket, head) => {
-    if (req.url !== '/rooms' || !originAllowed(req.headers.origin, allowed) || totalConnections >= maxConnections) {
+    const origin = req.headers.origin || 'none';
+    const isAllowed = req.url === '/rooms' && originAllowed(origin, allowed);
+    const isAtCapacity = totalConnections >= maxConnections;
+    if (req.url !== '/rooms') {
+      console.log('[ws] reject', { url: req.url, origin, reason: 'wrong-path' });
+      socket.destroy();
+      return;
+    }
+    if (!isAllowed) {
+      console.log('[ws] reject', { url: req.url, origin, allowed: [...allowed], reason: 'origin-not-allowed' });
+      socket.destroy();
+      return;
+    }
+    if (isAtCapacity) {
+      console.log('[ws] reject', { url: req.url, origin, reason: 'max-connections', totalConnections, maxConnections });
       socket.destroy();
       return;
     }
     wss.handleUpgrade(req, socket, head, ws => {
       totalConnections++;
+      console.log('[ws] accept', { url: req.url, origin, totalConnections });
       wss.emit('connection', ws);
     });
   });

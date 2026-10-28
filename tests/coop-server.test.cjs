@@ -79,6 +79,46 @@ test('non-host cannot change the room roster or relay to an unlisted identity', 
   assert.match((await waitFor(guest, 'error', message => /Mensaje inválido/.test(message.error))).error, /inválido/);
 });
 
+test('github pages origins are accepted even when the configured whitelist includes a pathname', async () => {
+  const githubService = createCoopServer({
+    verifyToken: async () => 'host',
+    allowedOrigins: 'https://stpt0.github.io/pokesurvivor/'
+  });
+  await new Promise(resolve => githubService.server.listen(0, '127.0.0.1', resolve));
+  const githubAddress = `ws://127.0.0.1:${githubService.server.address().port}/rooms`;
+  const ws = new WebSocket(githubAddress, { origin: 'https://stpt0.github.io' });
+  await new Promise((resolve, reject) => {
+    ws.once('open', resolve);
+    ws.once('error', reject);
+  });
+  ws.terminate();
+  await githubService.close();
+});
+
+test('wildcard origins are accepted for github pages and all sites', async () => {
+  const wildcardService = createCoopServer({
+    verifyToken: async () => 'host',
+    allowedOrigins: 'https://*.github.io/*,*'
+  });
+  await new Promise(resolve => wildcardService.server.listen(0, '127.0.0.1', resolve));
+  const address = `ws://127.0.0.1:${wildcardService.server.address().port}/rooms`;
+
+  const pagesWs = new WebSocket(address, { origin: 'https://stpt0.github.io/pokesurvivor/' });
+  await new Promise((resolve, reject) => {
+    pagesWs.once('open', resolve);
+    pagesWs.once('error', reject);
+  });
+  pagesWs.terminate();
+
+  const allWs = new WebSocket(address, { origin: 'https://example.com' });
+  await new Promise((resolve, reject) => {
+    allWs.once('open', resolve);
+    allWs.once('error', reject);
+  });
+  allWs.terminate();
+  await wildcardService.close();
+});
+
 test('health endpoint exposes only temporary room and client counts', async () => {
   const response = await fetch(`http://127.0.0.1:${service.server.address().port}/healthz`);
   assert.equal(response.status, 200);
