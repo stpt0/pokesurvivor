@@ -87,3 +87,18 @@ test('health endpoint exposes only temporary room and client counts', async () =
   assert.equal(typeof health.rooms, 'number');
   assert.equal(typeof health.clients, 'number');
 });
+
+test('host leave closes the server room and notifies every remaining member', async t => {
+  const host = await client('hostToken', 'host');
+  t.after(() => host.ws.terminate());
+  await waitFor(host, 'joined');
+  host.ws.send(JSON.stringify({ k: 'roster', members: ['host', 'guest'] }));
+  const guest = await client('guestToken', 'host');
+  t.after(() => guest.ws.terminate());
+  await waitFor(guest, 'joined');
+
+  host.ws.send(JSON.stringify({ k: 'leave' }));
+  await waitFor(guest, 'room-closed');
+  const response = await fetch(`http://127.0.0.1:${service.server.address().port}/healthz`);
+  assert.equal((await response.json()).rooms, 0);
+});

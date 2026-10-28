@@ -165,6 +165,14 @@
         if (G.UI.isOpen('scr-lobby')) render();
       });
       G.Net.onPeer(() => { if (G.UI.isOpen('scr-lobby')) render(); });
+      G.Net.on((from, message) => {
+        if (message && message.k === 'room-closed' && G.Social.room) {
+          G.Social.leaveRoom().then(() => {
+            G.UI.toast('La sala se ha cerrado', 2600);
+            if (G.UI.isOpen('scr-lobby')) G.MenuUI.open();
+          });
+        }
+      });
     }
 
     function open() {

@@ -85,3 +85,15 @@ test('connection loss schedules bounded reconnect without ending the room', asyn
   assert.equal(timers[0].delay, 1000);
   N.close();
 });
+
+test('server room-closed stops reconnecting and closes the local transport state', async () => {
+  const { N, sockets, timers } = client();
+  await N.open('host-uid', true, 'host-uid');
+  const ws = sockets[0]; ws.readyState = 1; ws.onopen();
+  N.syncMembers(['host-uid', 'guest-uid']);
+  ws.receive({ k: 'joined', uid: 'host-uid', peers: [{ uid: 'guest-uid', online: true }] });
+  ws.receive({ k: 'room-closed' });
+  assert.equal(N.open_, false);
+  assert.equal(N.mode('guest-uid'), 'closed');
+  assert.equal(timers.length, 0);
+});

@@ -43,6 +43,11 @@ G.Net = (() => {
     }
     if (message.k === 'room-closed') {
       peerModes.forEach((state, peer) => emitPeer(peer, 'closed'));
+      intentionallyClosed = true;
+      joined = false;
+      clearTimeout(reconnectTimer); reconnectTimer = 0;
+      roomId = null;
+      if (socket === current) { socket = null; current.close(1000, 'Room closed'); }
       handlers.forEach(fn => { try { fn(message.from || '', message); } catch (e) { console.error('[Net] mensaje:', e); } });
       return;
     }
