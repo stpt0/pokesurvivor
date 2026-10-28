@@ -7,7 +7,7 @@ El juego web se publica como sitio estático; por eso el transporte de las parti
 - Node.js 22 o posterior.
 - Una máquina/servicio Node.js de una sola instancia, siempre encendido.
 - Un nombre DNS con TLS. El cliente usa por defecto `wss://coop.pokesurvivor.com/rooms`.
-- Credenciales de cuenta de servicio de Firebase Admin del proyecto `pokesurvivor-free`.
+- `FIREBASE_PROJECT_ID` debe coincidir con la app web que emite los tokens (`pokesurvivor-ce14f` actualmente). Verificar ID tokens no requiere una clave de cuenta de servicio.
 
 ## Probar en localhost
 
@@ -40,7 +40,7 @@ Instala las dependencias y ejecuta el servicio:
 
 ```sh
 npm ci
-GOOGLE_CLOUD_PROJECT=pokesurvivor-free \
+FIREBASE_PROJECT_ID=pokesurvivor-ce14f \
 COOP_ALLOWED_ORIGINS=https://pokesurvivor.com,https://www.pokesurvivor.com \
 PORT=8787 npm run start:coop
 ```
@@ -68,4 +68,4 @@ npm run test:coop
 curl http://127.0.0.1:8787/healthz
 ```
 
-El despliegue no está activo hasta que el servicio esté alojado, el DNS apunte a él y las credenciales de Firebase Admin estén configuradas.
+El despliegue no está activo hasta que el servicio esté alojado, el DNS apunte a él y `FIREBASE_PROJECT_ID` coincida con `js/core/firebase-config.js`.

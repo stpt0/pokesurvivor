@@ -20,7 +20,8 @@ function originAllowed(origin, allowedOrigins) {
 function createFirebaseVerifier() {
   const { getApps, initializeApp } = require('firebase-admin/app');
   const { getAuth } = require('firebase-admin/auth');
-  const app = getApps()[0] || initializeApp({ projectId: process.env.GOOGLE_CLOUD_PROJECT || 'pokesurvivor-free' });
+  const projectId = process.env.FIREBASE_PROJECT_ID || 'pokesurvivor-ce14f';
+  const app = getApps()[0] || initializeApp({ projectId });
   return token => getAuth(app).verifyIdToken(token).then(decoded => decoded.uid);
 }
 
