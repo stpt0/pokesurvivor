@@ -1,0 +1,17 @@
+{
+  "name": "pokesurvivor",
+  "version": "1.0.0",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "start:coop": "node server/coop-server.js",
+    "test:coop": "node --test tests/coop-server.test.cjs tests/net-client.test.cjs tests/net.test.cjs"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "firebase-admin": "^14.5.0",
+    "ws": "^8.18.3"
+  }
+}

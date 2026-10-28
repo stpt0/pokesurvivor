@@ -6,6 +6,10 @@
  * Cada línea en español y en inglés.
  */
 G.CHANGELOG = [
+  { d: '2026-10-28', title: ['Cooperativo por servidor', 'Co-op through a server'], chg: [
+    ['Cooperativo: la partida ya no depende de que los móviles y routers de los jugadores puedan conectarse entre sí. Los mensajes pasan por un servidor Node.js; las salas, invitaciones y cuentas siguen como antes. Hace falta iniciar sesión.',
+     'Co-op no longer depends on players’ phones and routers being able to connect to each other. Messages go through a Node.js server; rooms, invitations and accounts stay as before. You need to be signed in.']
+  ]},
   { d: '2026-10-27', title: ["Cooperativo más estable", "Steadier co-op"], new: [
     ["Móvil y tableta: nuevo joystick «Anclado» (Ajustes → Controles → Colocar los botones). Aparece donde pones el dedo y se queda en ese sitio mientras lo mantienes, aunque alejes el dedo; al levantarlo y tocar en otro sitio, aparece allí. El «Flotante» de siempre sigue al dedo y sigue siendo el que viene puesto.",
      "Mobile and tablet: new \"Anchored\" joystick (Settings → Controls → Place the buttons). It appears where you put your finger and stays in that spot while you hold it, even if you move your finger away; lift it and touch somewhere else, and it appears there. The usual \"Floating\" one follows your finger and is still the default."]

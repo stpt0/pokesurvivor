@@ -96,6 +96,8 @@ jefe, la captura de un shiny salvaje y un shiny en el gacha.
 - **Jugar con amigos (hasta 4) y ranking:** con cuenta en la nube, menú
   **Amigos** (añadir por apodo, invitar a tu sala) y **Ranking** (tiempo
   aguantado: solo o grupo, de hoy a histórico, amigos, por Pokémon).
+- **Servidor cooperativo:** el tráfico de las partidas pasa por un servidor
+  Node.js; configuración y despliegue en [docs/COOP_SERVER.md](docs/COOP_SERVER.md).
 - **Publicar gratis en GitHub Pages:** [docs/PUBLICAR.md](docs/PUBLICAR.md).
 - Si se juega en dos ordenadores a la vez o sin conexión, las partidas se
   **fusionan**: las colecciones se unen (nunca se pierde un Pokémon ni un
@@ -125,7 +127,7 @@ assets/pokemon/{dex}/   hojas de sprites PMD (Idle, Walk, Attack, Shoot, Charge,
 assets/pokemon/{dex}/s/ las mismas en versión shiny
 assets/fonts/           Pixelify Sans (OFL) y su versión con números redibujados (tools/make_font.py)
 js/
-  net/      social (apodo, amigos, salas), net (WebRTC + relé),
+  net/      social (apodo, amigos, salas), net (WebSocket),
             coop (partida en grupo), ranking
   core/     util, db (guardado), audio (sintetizador + efectos), input,
             sprites (animador PMD), camera

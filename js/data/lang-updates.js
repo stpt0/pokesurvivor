@@ -971,6 +971,17 @@
     ["Ranking de daño a Arceus: «Sólo amigos» enseña también a los amigos que no están en el top 50 (en Histórico); en el Histórico se guarda tu mejor daño aunque esa partida no mejore tu tiempo; y si una partida no puede entrar en el ranking, ahora te lo dice.", "Classement des dégâts à Arceus : « Amis seulement » montre aussi les amis hors du top 50 (dans Historique) ; l’Historique garde tes meilleurs dégâts même si la partie ne bat pas ton temps ; et si une partie ne peut pas entrer dans le classement, le jeu te le dit maintenant.", "Classifica dei danni ad Arceus: «Solo amici» mostra anche gli amici fuori dalla top 50 (in Globale); in Globale si salva il tuo danno migliore anche se quella partita non migliora il tuo tempo; e se una partita non può entrare in classifica, ora te lo dice.", "Ranking de dano a Arceus: «Só amigos» mostra também os amigos fora do top 50 (no Histórico); no Histórico seu melhor dano é salvo mesmo que a partida não melhore seu tempo; e se uma partida não puder entrar no ranking, agora o jogo avisa.", "阿尔宙斯伤害排行榜：“仅好友”现在也会显示不在前 50 名的好友（历史）；历史榜会保存你的最高伤害，即使那局没有刷新时间纪录；如果某局无法进入排行榜，现在会提示你。", "阿爾宙斯傷害排行榜：「僅好友」現在也會顯示不在前 50 名的好友（歷史榜）；歷史榜會保存你的最高傷害，即使那局沒有刷新時間紀錄；如果某局無法進入排行榜，現在會提示你。"]
   ];
   languages.forEach((lang, i) => G.I18n.add(Object.fromEntries(rows.map(r => [r[0], r[i + 1]])), lang));
+  const coopServer = {
+    fr: ['Coopération via un serveur', 'La partie coopérative ne dépend plus de la capacité des téléphones et des routeurs à se connecter entre eux. Les messages passent par un serveur Node.js ; les salons, invitations et comptes restent inchangés. Connexion requise.'],
+    it: ['Cooperativa tramite server', 'La partita cooperativa non dipende più dalla possibilità che telefoni e router dei giocatori si colleghino tra loro. I messaggi passano da un server Node.js; stanze, inviti e account restano invariati. È necessario accedere.'],
+    'pt-BR': ['Cooperativo por servidor', 'A partida cooperativa não depende mais de celulares e roteadores conseguirem se conectar entre si. As mensagens passam por um servidor Node.js; salas, convites e contas continuam iguais. É preciso entrar na conta.'],
+    'zh-Hans': ['通过服务器进行合作模式', '合作对局不再依赖玩家的手机和路由器能否彼此连接。消息会通过 Node.js 服务器转发；房间、邀请和账号功能保持不变。需要登录账号。'],
+    'zh-Hant': ['透過伺服器進行合作模式', '合作對局不再依賴玩家的手機和路由器能否彼此連線。訊息會透過 Node.js 伺服器轉送；房間、邀請和帳號功能維持不變。需要登入帳號。']
+  };
+  for (const [lang, texts] of Object.entries(coopServer)) G.I18n.add({
+    'Cooperativo por servidor': texts[0],
+    'Cooperativo: la partida ya no depende de que los móviles y routers de los jugadores puedan conectarse entre sí. Los mensajes pasan por un servidor Node.js; las salas, invitaciones y cuentas siguen como antes. Hace falta iniciar sesión.': texts[1]
+  }, lang);
   G.I18n.add({
     'Surf': 'Surf', '+1 orbe': '+1 orbe', 'Dojo Ancestral': 'Dojo ancestral',
     '+1 ticket': '+1 ticket', 'Pokémon': 'Pokémon', 'Runs': 'Parties',
