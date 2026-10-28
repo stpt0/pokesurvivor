@@ -202,7 +202,7 @@ function createCoopServer({ verifyToken = createFirebaseVerifier(), allowedOrigi
 
 if (require.main === module) {
   const { server } = createCoopServer();
-  const port = Number(process.env.PORT) || 8787;
+  const port = Number(process.env.PORT) || 8001;
   server.listen(port, '0.0.0.0', () => console.log(`Co-op server listening on ${port}`));
 }
 
