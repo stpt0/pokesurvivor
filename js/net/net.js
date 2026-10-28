@@ -4,7 +4,7 @@
  */
 G.Net = (() => {
   const localHost = ['localhost', '127.0.0.1'].includes(window.location.hostname);
-  const SERVER_URL = window.PS_COOP_SERVER_URL || (localHost ? 'ws://localhost:8001/rooms' : 'ws://ghastly-cemetery-v696p6x54qv5h4qv-8001.app.github.dev/rooms');
+  const SERVER_URL = window.PS_COOP_SERVER_URL || (localHost ? 'ws://localhost:8001/rooms' : 'wss://51.75.118.5:20368/rooms');
   const RECONNECT_MIN = 1000, RECONNECT_MAX = 15000;
   const BUSY_BYTES = 64 * 1024;
   const handlers = new Set(), peerHandlers = new Set();
